@@ -26,6 +26,7 @@ function SearchContent() {
 
   // Query parameters
   const qParam = searchParams.get("q") || "";
+  const _qParam = searchParams.get("q") || "";
   const catParam = searchParams.get("category") || "";
   const brandParam = searchParams.get("brand") || "";
   const isOrganicParam = searchParams.get("isOrganic") === "true";
