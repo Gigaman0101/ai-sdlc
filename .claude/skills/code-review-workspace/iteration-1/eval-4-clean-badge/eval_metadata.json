@@ -1,0 +1,14 @@
+{
+  "eval_id": 4,
+  "eval_name": "clean-badge",
+  "prompt": "ตรวจ src/components/Badge.tsx ให้หน่อยว่ามีปัญหาอะไรไหม",
+  "assertions": [
+    "Ran ESLint on the target file",
+    "Ran tsc --noEmit type check",
+    "Reports lint gate as clean / passing",
+    "Does not report any Critical-level bug",
+    "Verdict is Ready or Needs changes (not Blocked)",
+    "No project files modified",
+    "Report written in Thai"
+  ]
+}

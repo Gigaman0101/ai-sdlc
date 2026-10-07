@@ -1,0 +1,60 @@
+{
+  "expectations": [
+    {
+      "text": "Ran ESLint on the target file",
+      "passed": true,
+      "evidence": "Ran `npx eslint`, found no-explicit-any"
+    },
+    {
+      "text": "Ran tsc --noEmit type check",
+      "passed": false,
+      "evidence": "commands.md has no tsc run"
+    },
+    {
+      "text": "Flags SQL injection via the q parameter in LIKE",
+      "passed": true,
+      "evidence": "Blocker 1: SQL injection via q, verified"
+    },
+    {
+      "text": "Flags ORDER BY injection via sort and suggests an allow-list",
+      "passed": true,
+      "evidence": "Blocker 2: ORDER BY injection, whitelist"
+    },
+    {
+      "text": "Flags minDiscount parseInt NaN / missing validation",
+      "passed": true,
+      "evidence": "Item 3: minDiscount NaN"
+    },
+    {
+      "text": "Flags missing try/catch or project error shape { error, message, statusCode }",
+      "passed": true,
+      "evidence": "Item 5: no try/catch"
+    },
+    {
+      "text": "Flags division by zero when stock_total is 0",
+      "passed": true,
+      "evidence": "Item 6: division by zero"
+    },
+    {
+      "text": "Verdict is Blocked / not ready",
+      "passed": true,
+      "evidence": "'ยังย้ายไป ... ไม่ได้ครับ'"
+    },
+    {
+      "text": "No project files modified",
+      "passed": true,
+      "evidence": "pre/post checksum identical"
+    },
+    {
+      "text": "Report written in Thai",
+      "passed": true,
+      "evidence": "Report in Thai"
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 1,
+    "total": 10,
+    "pass_rate": 0.9
+  }
+}

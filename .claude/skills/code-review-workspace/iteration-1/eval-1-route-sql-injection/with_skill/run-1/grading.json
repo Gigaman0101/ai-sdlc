@@ -1,0 +1,60 @@
+{
+  "expectations": [
+    {
+      "text": "Ran ESLint on the target file",
+      "passed": true,
+      "evidence": "commands.md: `npx eslint src/__review_fixtures__/deals-search/route.ts` exit 1"
+    },
+    {
+      "text": "Ran tsc --noEmit type check",
+      "passed": true,
+      "evidence": "commands.md: `npx tsc --noEmit` exit 0"
+    },
+    {
+      "text": "Flags SQL injection via the q parameter in LIKE",
+      "passed": true,
+      "evidence": "Critical: SQL injection via q, verified with in-memory UNION test"
+    },
+    {
+      "text": "Flags ORDER BY injection via sort and suggests an allow-list",
+      "passed": true,
+      "evidence": "Critical: ORDER BY injection, SORTS allow-list snippet"
+    },
+    {
+      "text": "Flags minDiscount parseInt NaN / missing validation",
+      "passed": true,
+      "evidence": "Warning: minDiscount NaN -> 'no such column: NaN'"
+    },
+    {
+      "text": "Flags missing try/catch or project error shape { error, message, statusCode }",
+      "passed": true,
+      "evidence": "Warning: no try/catch, cites { error, message, statusCode } from top-saver route"
+    },
+    {
+      "text": "Flags division by zero when stock_total is 0",
+      "passed": true,
+      "evidence": "Suggestion: stock_total = 0 -> 0/0 = NaN"
+    },
+    {
+      "text": "Verdict is Blocked / not ready",
+      "passed": true,
+      "evidence": "ผลรวม: ❌ Blocked"
+    },
+    {
+      "text": "No project files modified",
+      "passed": true,
+      "evidence": "pre/post checksum identical"
+    },
+    {
+      "text": "Report written in Thai",
+      "passed": true,
+      "evidence": "Report in Thai"
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "total": 10,
+    "pass_rate": 1.0
+  }
+}

@@ -1,0 +1,1599 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Farmart Grocery Store API",
+    "description": "API Specification ออกแบบจากฟังก์ชันและหน้าเว็บทั้งหมดของระบบ Farmart Supermarket / E-Commerce (Next.js App Router)\n\nครอบคลุมทั้งระบบแค็ตตาล็อกสินค้า (Products), หมวดหมู่และแบรนด์ (Categories & Brands), ดีลพิเศษประจำวัน (Top Saver, Best Seller, Just Landing), ระบบรีวิวและการให้คะแนน (Reviews), ตะกร้าสินค้า (Cart), รายการสินค้าที่ชอบ (Wishlist), จดหมายข่าว (Newsletter), และสถานะระบบ (Health Check)",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Farmart Engineering Team",
+      "email": "api-support@farmart.example.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Development Server"
+    },
+    {
+      "url": "/",
+      "description": "Current Origin Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Products",
+      "description": "จัดการและค้นหาข้อมูลสินค้าในระบบ รายละเอียดสินค้า โภชนาการ และแหล่งกำเนิด"
+    },
+    {
+      "name": "Categories & Brands",
+      "description": "หมวดหมู่สินค้าและแบรนด์พันธมิตรยอดนิยม"
+    },
+    {
+      "name": "Deals & Collections",
+      "description": "ดีลประจำวัน (Top Saver Today), สินค้าขายดี (Best Seller) และสินค้ามาใหม่ (Just Landing)"
+    },
+    {
+      "name": "Reviews",
+      "description": "รีวิว คะแนนดาว และการมีส่วนร่วมของลูกค้าต่อสินค้า"
+    },
+    {
+      "name": "Cart",
+      "description": "ระบบตะกร้าสินค้า (Shopping Cart Drawer & Checkout)"
+    },
+    {
+      "name": "Wishlist",
+      "description": "รายการสินค้าโปรดที่ผู้ใช้บันทึกไว้"
+    },
+    {
+      "name": "Newsletter",
+      "description": "การสมัครรับข้อมูลข่าวสาร โปรโมชั่นและส่วนลด"
+    },
+    {
+      "name": "System",
+      "description": "การตรวจสอบสถานะระบบและ Health Check"
+    }
+  ],
+  "paths": {
+    "/api/products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "ค้นหารายการสินค้า (Search & Filter Products)",
+        "description": "ดึงรายการสินค้าพร้อมรองรับการค้นหาตามคีย์เวิร์ด, กรองตามหมวดหมู่, แบรนด์, สินค้าออร์แกนิก และการจัดเรียง",
+        "operationId": "getProducts",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "คำค้นหาชื่อสินค้า แบรนด์ หรือรายละเอียด",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "avocado"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Slug หรือชื่อหมวดหมู่สินค้า",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "fruits-vegetables"
+          },
+          {
+            "name": "brand",
+            "in": "query",
+            "description": "ชื่อแบรนด์สินค้า",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Farmart Organic Direct"
+          },
+          {
+            "name": "isOrganic",
+            "in": "query",
+            "description": "กรองเฉพาะสินค้าที่เป็นออร์แกนิก 100%",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "example": true
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "การเรียงลำดับสินค้า",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["featured", "price_asc", "price_desc", "rating", "newest"],
+              "default": "featured"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "หมายเลขหน้าที่ต้องการดึงข้อมูล",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "จำนวนสินค้าต่อหน้า",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 12,
+              "maximum": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ดึงรายการสินค้าสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "พารามิเตอร์การค้นหาไม่ถูกต้อง",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "ดึงข้อมูลรายละเอียดสินค้าเดี่ยว (Get Product Details)",
+        "description": "ดึงข้อมูลรายละเอียดฉบับเต็มของสินค้า โดยระบุ `id` หรือ `slug` รวมถึงตารางโภชนาการ แหล่งที่มา และแกลเลอรีรูปภาพ",
+        "operationId": "getProductById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID สินค้า หรือ Slug สินค้า",
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "พบข้อมูลสินค้า",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ไม่พบสินค้าตาม ID ที่ระบุ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{id}/related": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "ดึงรายการสินค้าที่เกี่ยวข้อง (Related Products)",
+        "description": "ดึงสินค้าในหมวดหมู่เดียวกันหรือสินค้าแนะนำสำหรับหน้ารายละเอียดสินค้า",
+        "operationId": "getRelatedProducts",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID สินค้าหลัก",
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ดึงสินค้าที่เกี่ยวข้องสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductCardItem"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ไม่พบสินค้าหลัก",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{id}/bundle": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "ชุดสินค้าซื้อคู่กันบ่อย (Frequently Bought Together)",
+        "description": "ดึงรายการสินค้าบันเดิลที่มักจะซื้อร่วมกัน พร้อมราคาพิเศษรวม",
+        "operationId": "getProductBundle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID สินค้าหลัก",
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ดึงข้อมูล Bundle สำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BundleResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "tags": ["Categories & Brands"],
+        "summary": "รายการหมวดหมู่สินค้าทั้งหมด (Browse Categories)",
+        "description": "ดึงหมวดหมู่หลักทั้งหมดสำหรับแสดงในหน้าแรกและเมนูหมวดหมู่",
+        "operationId": "getCategories",
+        "responses": {
+          "200": {
+            "description": "ดึงหมวดหมู่สำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/categories/{slug}": {
+      "get": {
+        "tags": ["Categories & Brands"],
+        "summary": "ดึงข้อมูลหมวดหมู่ตาม Slug",
+        "operationId": "getCategoryBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "Slug ของหมวดหมู่ เช่น fruits-vegetables",
+            "schema": {
+              "type": "string"
+            },
+            "example": "fruits-vegetables"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "พบหมวดหมู่",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ไม่พบหมวดหมู่",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/brands": {
+      "get": {
+        "tags": ["Categories & Brands"],
+        "summary": "รายชื่อแบรนด์ยอดนิยม (Featured Brands)",
+        "description": "ดึงรายชื่อแบรนด์เด่นประจำร้านค้า เช่น Farmart Organic, PureHarvest, GreenMeadow",
+        "operationId": "getFeaturedBrands",
+        "responses": {
+          "200": {
+            "description": "ดึงแบรนด์สำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Brand"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/deals/top-saver": {
+      "get": {
+        "tags": ["Deals & Collections"],
+        "summary": "ดีลสุดคุ้มประจำวัน (Top Saver Today)",
+        "description": "ดึงข้อมูลสินค้า Flash Sale ประจำวัน พร้อมเวลานับถอยหลัง (Countdown) และจำนวนสินค้าที่เหลือ",
+        "operationId": "getTopSaverDeals",
+        "responses": {
+          "200": {
+            "description": "ดึงดีล Top Saver สำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopSaverResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/best-sellers": {
+      "get": {
+        "tags": ["Deals & Collections"],
+        "summary": "สินค้าขายดี (Best Seller Collection)",
+        "description": "ดึงรายการสินค้าขายดียอดนิยม รองรับการกรองตามแท็บหมวดหมู่ (All, Fruits & Vegetables, ฯลฯ)",
+        "operationId": "getBestSellers",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "กรองตามหมวดหมู่ (default: All)",
+            "schema": {
+              "type": "string",
+              "default": "All"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 8
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ดึงสินค้าขายดีสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductCardItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/just-landing": {
+      "get": {
+        "tags": ["Deals & Collections"],
+        "summary": "สินค้าเข้าใหม่ล่าสุด (Just Landing Collection)",
+        "description": "ดึงรายการสินค้าใหม่ล่าสุดในร้านค้า",
+        "operationId": "getJustLanding",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "All"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 8
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ดึงสินค้าใหม่สำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductCardItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{id}/reviews": {
+      "get": {
+        "tags": ["Reviews"],
+        "summary": "ดึงรายการรีวิวของสินค้า (Get Product Reviews)",
+        "description": "ดึงรีวิวของสินค้าตาม ID พร้อมข้อมูลคะแนนดาว, ความคิดเห็น และสถานะ Verified Purchase",
+        "operationId": "getProductReviews",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          },
+          {
+            "name": "rating",
+            "in": "query",
+            "description": "กรองตามคะแนนดาว (1-5)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "การเรียงลำดับรีวิว",
+            "schema": {
+              "type": "string",
+              "enum": ["newest", "highest_rating", "most_helpful"],
+              "default": "newest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ดึงรายการรีวิวสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Reviews"],
+        "summary": "ส่งรีวิวสินค้าใหม่ (Submit New Review)",
+        "description": "บันทึกรีวิวและความคิดเห็นใหม่สำหรับสินค้าจากกล่องโต้ตอบ Write a Review",
+        "operationId": "submitProductReview",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "สร้างรีวิวเรียบร้อย",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ข้อมูลรีวิวไม่ถูกต้อง",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{id}/reviews/{reviewId}/helpful": {
+      "post": {
+        "tags": ["Reviews"],
+        "summary": "โหวตว่ารีวิวมีประโยชน์ (Mark Review as Helpful)",
+        "description": "เพิ่มจำนวนคะแนนความมีประโยชน์ (helpfulCount) ให้กับรีวิว",
+        "operationId": "voteHelpfulReview",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          },
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "rev-1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "โหวตสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviewId": {
+                      "type": "string",
+                      "example": "rev-1"
+                    },
+                    "helpfulCount": {
+                      "type": "integer",
+                      "example": 24
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cart": {
+      "get": {
+        "tags": ["Cart"],
+        "summary": "ดึงข้อมูลสินค้าในตะกร้า (Get Shopping Cart)",
+        "description": "ดึงรายการสินค้าในตะกร้า, จำนวนรวมทั้งหมด, และยอดเงินรวมสำหรับ Cart Drawer / Top Header",
+        "operationId": "getCart",
+        "responses": {
+          "200": {
+            "description": "ดึงข้อมูลตะกร้าสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cart/items": {
+      "post": {
+        "tags": ["Cart"],
+        "summary": "เพิ่มสินค้าลงในตะกร้า (Add Item to Cart)",
+        "description": "เพิ่มสินค้าพร้อมระบุจำนวนที่ต้องการลงในตะกร้า",
+        "operationId": "addToCart",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddToCartDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "เพิ่มสินค้าลงตะกร้าสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "สินค้าหมดหรือไม่สามารถเพิ่มได้",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cart/items/{itemId}": {
+      "patch": {
+        "tags": ["Cart"],
+        "summary": "แก้ไขจำนวนสินค้าในตะกร้า (Update Item Quantity)",
+        "description": "ปรับปรุงจำนวนสินค้า (เช่น จาก QuantityStepper) ในตะกร้า",
+        "operationId": "updateCartItemQuantity",
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCartItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "อัปเดตจำนวนสินค้าสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Cart"],
+        "summary": "ลบสินค้าออกจากตะกร้า (Remove Item from Cart)",
+        "operationId": "removeCartItem",
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ลบสินค้าสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CartResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/wishlist": {
+      "get": {
+        "tags": ["Wishlist"],
+        "summary": "ดึงรายการสินค้าที่ชอบ (Get Wishlist Items)",
+        "operationId": "getWishlist",
+        "responses": {
+          "200": {
+            "description": "ดึงรายการสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalCount": {
+                      "type": "integer",
+                      "example": 2
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ProductCardItem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/wishlist/items": {
+      "post": {
+        "tags": ["Wishlist"],
+        "summary": "เพิ่มสินค้าลงใน Wishlist (Save Item)",
+        "operationId": "addToWishlist",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WishlistActionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "บันทึกสินค้าลง Wishlist สำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/wishlist/items/{productId}": {
+      "delete": {
+        "tags": ["Wishlist"],
+        "summary": "ลบสินค้าออกจาก Wishlist (Remove Item)",
+        "operationId": "removeFromWishlist",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ลบออกจาก Wishlist สำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/newsletter/subscribe": {
+      "post": {
+        "tags": ["Newsletter"],
+        "summary": "สมัครรับจดหมายข่าวและโปรโมชั่น (Newsletter Subscription)",
+        "description": "บันทึกอีเมลเพื่อรับคูปองส่วนลดและข่าวสารประจำสัปดาห์",
+        "operationId": "subscribeNewsletter",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewsletterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "สมัครรับจดหมายข่าวสำเร็จ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "รูปแบบอีเมลไม่ถูกต้อง",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hello": {
+      "get": {
+        "tags": ["System"],
+        "summary": "System Health Check & Greeting",
+        "description": "Endpoint เดิมที่มีอยู่ในระบบสำหรับทดสอบการทำงานของ Next.js Route Handler",
+        "operationId": "getHello",
+        "responses": {
+          "200": {
+            "description": "ระบบทำงานปกติ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HelloResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProductCardItem": {
+        "type": "object",
+        "required": ["id", "name", "price", "rating", "reviewCount"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Fresh Organic Hass Avocado (Pack of 4)"
+          },
+          "brand": {
+            "type": "string",
+            "example": "Farmart Organic Direct"
+          },
+          "category": {
+            "type": "string",
+            "example": "Fruits & Vegetables"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 6.49
+          },
+          "oldPrice": {
+            "type": "number",
+            "format": "float",
+            "example": 8.99
+          },
+          "unit": {
+            "type": "string",
+            "example": "4 pcs (~650g)"
+          },
+          "discountPercent": {
+            "type": "integer",
+            "example": 28
+          },
+          "isOrganic": {
+            "type": "boolean",
+            "example": true
+          },
+          "rating": {
+            "type": "number",
+            "format": "float",
+            "example": 4.9
+          },
+          "reviewCount": {
+            "type": "integer",
+            "example": 128
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "/images/products/avocado.png"
+          }
+        }
+      },
+      "NutritionItem": {
+        "type": "object",
+        "required": ["name", "amount"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Total Fat"
+          },
+          "amount": {
+            "type": "string",
+            "example": "12g"
+          },
+          "dailyValue": {
+            "type": "string",
+            "example": "15%"
+          }
+        }
+      },
+      "OriginInfo": {
+        "type": "object",
+        "required": ["farmName", "location", "harvestDate", "storageTemp", "shelfLife"],
+        "properties": {
+          "farmName": {
+            "type": "string",
+            "example": "Green Valley Regenerative Cooperative"
+          },
+          "location": {
+            "type": "string",
+            "example": "Chiang Mai Highlands, Thailand"
+          },
+          "harvestDate": {
+            "type": "string",
+            "example": "Yesterday morning (06:30 AM)"
+          },
+          "storageTemp": {
+            "type": "string",
+            "example": "12°C - 15°C (Cool Pantry)"
+          },
+          "shelfLife": {
+            "type": "string",
+            "example": "5 to 7 days from delivery date"
+          }
+        }
+      },
+      "GalleryItem": {
+        "type": "object",
+        "required": ["id", "label"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "front"
+          },
+          "label": {
+            "type": "string",
+            "example": "Fresh Whole Fruit"
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "/images/products/avocado-front.png"
+          }
+        }
+      },
+      "ReviewItem": {
+        "type": "object",
+        "required": ["id", "author", "rating", "date", "title", "comment", "verified", "helpfulCount"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "rev-1"
+          },
+          "author": {
+            "type": "string",
+            "example": "Sarah Jenkins"
+          },
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "example": 5
+          },
+          "date": {
+            "type": "string",
+            "example": "2 days ago"
+          },
+          "title": {
+            "type": "string",
+            "example": "Best organic avocados I've ever ordered online!"
+          },
+          "comment": {
+            "type": "string",
+            "example": "Arrived in flawless condition with zero bruises. Cut one open immediately and the flesh was velvety and creamy."
+          },
+          "verified": {
+            "type": "boolean",
+            "example": true
+          },
+          "helpfulCount": {
+            "type": "integer",
+            "example": 24
+          }
+        }
+      },
+      "ProductDetail": {
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "brand",
+          "category",
+          "categorySlug",
+          "price",
+          "unit",
+          "rating",
+          "reviewCount",
+          "stockStatus",
+          "stockCount",
+          "sku",
+          "barcode",
+          "shortDescription",
+          "fullDescription",
+          "highlights",
+          "nutritionFacts",
+          "originInfo",
+          "gallery",
+          "reviews"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "slug": {
+            "type": "string",
+            "example": "organic-hass-avocado"
+          },
+          "name": {
+            "type": "string",
+            "example": "Fresh Organic Hass Avocado (Pack of 4)"
+          },
+          "brand": {
+            "type": "string",
+            "example": "Farmart Organic Direct"
+          },
+          "category": {
+            "type": "string",
+            "example": "Fruits & Vegetables"
+          },
+          "categorySlug": {
+            "type": "string",
+            "example": "fruits-vegetables"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 6.49
+          },
+          "oldPrice": {
+            "type": "number",
+            "format": "float",
+            "example": 8.99
+          },
+          "unit": {
+            "type": "string",
+            "example": "4 pcs (~650g)"
+          },
+          "discountPercent": {
+            "type": "integer",
+            "example": 28
+          },
+          "isOrganic": {
+            "type": "boolean",
+            "example": true
+          },
+          "rating": {
+            "type": "number",
+            "format": "float",
+            "example": 4.9
+          },
+          "reviewCount": {
+            "type": "integer",
+            "example": 128
+          },
+          "stockStatus": {
+            "type": "string",
+            "enum": ["in_stock", "low_stock", "out_of_stock"],
+            "example": "in_stock"
+          },
+          "stockCount": {
+            "type": "integer",
+            "example": 84
+          },
+          "sku": {
+            "type": "string",
+            "example": "FM-ORG-AVO-04"
+          },
+          "barcode": {
+            "type": "string",
+            "example": "8859123400192"
+          },
+          "shortDescription": {
+            "type": "string",
+            "example": "Hand-picked buttery Hass avocados cultivated on certified regenerative organic orchards."
+          },
+          "fullDescription": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Our Fresh Organic Hass Avocados are nurtured under temperate sun drenched orchards without any synthetic pesticides.",
+              "Avocados are known as nature's superfood, loaded with heart-healthy monounsaturated oleic acid, fiber, and potassium."
+            ]
+          },
+          "highlights": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "100% Certified Organic (USDA & Bio-Organic)",
+              "Zero Synthetic Chemical Sprays or Waxes",
+              "Picked within 36 hours of your delivery"
+            ]
+          },
+          "nutritionFacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NutritionItem"
+            }
+          },
+          "originInfo": {
+            "$ref": "#/components/schemas/OriginInfo"
+          },
+          "gallery": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GalleryItem"
+            }
+          },
+          "reviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewItem"
+            }
+          },
+          "relatedIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["2", "3", "4"]
+          }
+        }
+      },
+      "ProductListResponse": {
+        "type": "object",
+        "required": ["total", "page", "limit", "products"],
+        "properties": {
+          "total": {
+            "type": "integer",
+            "example": 48
+          },
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "example": 12
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductCardItem"
+            }
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "required": ["id", "name", "slug", "itemCount"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "cat-1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Fruits & Vegetables"
+          },
+          "slug": {
+            "type": "string",
+            "example": "fruits-vegetables"
+          },
+          "icon": {
+            "type": "string",
+            "example": "fruit"
+          },
+          "itemCount": {
+            "type": "integer",
+            "example": 154
+          }
+        }
+      },
+      "Brand": {
+        "type": "object",
+        "required": ["id", "name", "productCount"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "brand-1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Farmart Organic Direct"
+          },
+          "logoUrl": {
+            "type": "string",
+            "example": "/images/brands/farmart.svg"
+          },
+          "productCount": {
+            "type": "integer",
+            "example": 32
+          }
+        }
+      },
+      "TopSaverItem": {
+        "type": "object",
+        "required": ["id", "name", "price", "oldPrice", "discountPercent", "stockTotal", "stockSold"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "deal-1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Fresh Organic Red Seedless Grapes"
+          },
+          "price": {
+            "type": "number",
+            "example": 4.25
+          },
+          "oldPrice": {
+            "type": "number",
+            "example": 7.50
+          },
+          "discountPercent": {
+            "type": "integer",
+            "example": 43
+          },
+          "unit": {
+            "type": "string",
+            "example": "500g box"
+          },
+          "stockTotal": {
+            "type": "integer",
+            "example": 100
+          },
+          "stockSold": {
+            "type": "integer",
+            "example": 78
+          }
+        }
+      },
+      "TopSaverResponse": {
+        "type": "object",
+        "required": ["expiresAt", "timeLeftFormatted", "deals"],
+        "properties": {
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-09-09T23:59:59Z"
+          },
+          "timeLeftFormatted": {
+            "type": "object",
+            "properties": {
+              "hours": { "type": "string", "example": "08" },
+              "minutes": { "type": "string", "example": "25" },
+              "seconds": { "type": "string", "example": "37" }
+            }
+          },
+          "deals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TopSaverItem"
+            }
+          }
+        }
+      },
+      "BundleResponse": {
+        "type": "object",
+        "required": ["mainProduct", "bundleItems", "bundlePrice", "originalTotalPrice", "savings"],
+        "properties": {
+          "mainProduct": {
+            "$ref": "#/components/schemas/ProductCardItem"
+          },
+          "bundleItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductCardItem"
+            }
+          },
+          "bundlePrice": {
+            "type": "number",
+            "example": 14.99
+          },
+          "originalTotalPrice": {
+            "type": "number",
+            "example": 18.50
+          },
+          "savings": {
+            "type": "number",
+            "example": 3.51
+          }
+        }
+      },
+      "CreateReviewDto": {
+        "type": "object",
+        "required": ["author", "rating", "title", "comment"],
+        "properties": {
+          "author": {
+            "type": "string",
+            "example": "David Miller"
+          },
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "example": 5
+          },
+          "title": {
+            "type": "string",
+            "example": "Super fresh and delicious"
+          },
+          "comment": {
+            "type": "string",
+            "example": "Will definitely purchase again next week!"
+          }
+        }
+      },
+      "ReviewListResponse": {
+        "type": "object",
+        "required": ["averageRating", "totalReviews", "reviews"],
+        "properties": {
+          "averageRating": {
+            "type": "number",
+            "example": 4.9
+          },
+          "totalReviews": {
+            "type": "integer",
+            "example": 128
+          },
+          "ratingDistribution": {
+            "type": "object",
+            "properties": {
+              "5": { "type": "integer", "example": 110 },
+              "4": { "type": "integer", "example": 12 },
+              "3": { "type": "integer", "example": 4 },
+              "2": { "type": "integer", "example": 1 },
+              "1": { "type": "integer", "example": 1 }
+            }
+          },
+          "reviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewItem"
+            }
+          }
+        }
+      },
+      "CartItem": {
+        "type": "object",
+        "required": ["id", "name", "price", "quantity", "unit"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Fresh Organic Hass Avocado (Pack of 4)"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 6.49
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 2
+          },
+          "unit": {
+            "type": "string",
+            "example": "4 pcs (~650g)"
+          },
+          "itemTotal": {
+            "type": "number",
+            "format": "float",
+            "example": 12.98
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "/images/products/avocado.png"
+          }
+        }
+      },
+      "CartResponse": {
+        "type": "object",
+        "required": ["items", "totalItems", "subtotal", "shippingEstimated", "grandTotal"],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CartItem"
+            }
+          },
+          "totalItems": {
+            "type": "integer",
+            "example": 3
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "float",
+            "example": 51.49
+          },
+          "shippingEstimated": {
+            "type": "number",
+            "format": "float",
+            "example": 0.00
+          },
+          "grandTotal": {
+            "type": "number",
+            "format": "float",
+            "example": 51.49
+          }
+        }
+      },
+      "AddToCartDto": {
+        "type": "object",
+        "required": ["productId", "quantity"],
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "1"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 1
+          }
+        }
+      },
+      "UpdateCartItemDto": {
+        "type": "object",
+        "required": ["quantity"],
+        "properties": {
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 3
+          }
+        }
+      },
+      "WishlistActionDto": {
+        "type": "object",
+        "required": ["productId"],
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "1"
+          }
+        }
+      },
+      "NewsletterDto": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "customer@example.com"
+          }
+        }
+      },
+      "HelloResponse": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Hello everyone!!"
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "required": ["success", "message"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Operation completed successfully"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["error", "message"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Not Found"
+          },
+          "message": {
+            "type": "string",
+            "example": "Product with ID 999 not found"
+          },
+          "statusCode": {
+            "type": "integer",
+            "example": 404
+          }
+        }
+      }
+    }
+  }
+}

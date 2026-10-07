@@ -1,0 +1,45 @@
+{
+  "expectations": [
+    {
+      "text": "Ran ESLint on the target file",
+      "passed": true,
+      "evidence": "eslint exit 0"
+    },
+    {
+      "text": "Ran tsc --noEmit type check",
+      "passed": true,
+      "evidence": "tsc piped to grep badge, no errors"
+    },
+    {
+      "text": "Reports lint gate as clean / passing",
+      "passed": true,
+      "evidence": "'ESLint ผ่าน'"
+    },
+    {
+      "text": "Does not report any Critical-level bug",
+      "passed": true,
+      "evidence": "'ไม่มีบั๊กที่ทำให้พัง'"
+    },
+    {
+      "text": "Verdict is Ready or Needs changes (not Blocked)",
+      "passed": true,
+      "evidence": "No explicit verdict but implies needs changes (ควรแก้), not blocked"
+    },
+    {
+      "text": "No project files modified",
+      "passed": true,
+      "evidence": "pre/post checksum identical"
+    },
+    {
+      "text": "Report written in Thai",
+      "passed": true,
+      "evidence": "Report in Thai"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 0,
+    "total": 7,
+    "pass_rate": 1.0
+  }
+}

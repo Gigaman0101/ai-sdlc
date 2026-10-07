@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50" fill="none">
+  <rect width="160" height="50" rx="8" fill="#EFF6FF"/>
+  <circle cx="28" cy="25" r="14" fill="#2563EB"/>
+  <circle cx="25" cy="22" r="3" fill="#93C5FD"/>
+  <circle cx="31" cy="27" r="2" fill="#93C5FD"/>
+  <text x="50" y="31" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="16" fill="#1E40AF" letter-spacing="0.5">SODA BRAND</text>
+</svg>

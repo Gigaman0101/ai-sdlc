@@ -1,0 +1,18 @@
+{
+  "eval_id": 2,
+  "eval_name": "component-hooks-bugs",
+  "prompt": "รีวิว src/__review_fixtures__/DealBanner.tsx ให้หน่อย พร้อม commit หรือยัง",
+  "assertions": [
+    "Ran ESLint on the target file",
+    "Ran tsc --noEmit type check",
+    "Flags lowercase component name deal_banner (should be PascalCase)",
+    "Flags useEffect called inside a condition",
+    "Flags setInterval without cleanup in useEffect",
+    "Flags missing key prop in deals.map",
+    "Flags <img> missing alt / should use next/image",
+    "Flags <a href> should be next/link",
+    "Verdict is Blocked / not ready to commit",
+    "No project files modified",
+    "Report written in Thai"
+  ]
+}

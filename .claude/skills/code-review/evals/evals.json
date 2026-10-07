@@ -1,0 +1,74 @@
+{
+  "skill_name": "code-review",
+  "evals": [
+    {
+      "id": 1,
+      "name": "route-sql-injection",
+      "prompt": "ช่วย review src/__review_fixtures__/deals-search/route.ts หน่อยครับ กำลังจะย้ายไปเป็น app/api/deals/search/route.ts",
+      "expected_output": "Lint gate run (ESLint any error); manual findings: SQL injection via q, ORDER BY injection via sort, NaN minDiscount, no try/catch / 500 shape, division by zero when stock_total=0, missing DB doc sync/tests. Verdict Blocked. No file edits.",
+      "files": [],
+      "assertions": [
+        "Ran ESLint on the target file",
+        "Ran tsc --noEmit type check",
+        "Flags SQL injection via the q parameter in LIKE",
+        "Flags ORDER BY injection via sort and suggests an allow-list",
+        "Flags minDiscount parseInt NaN / missing validation",
+        "Flags missing try/catch or project error shape { error, message, statusCode }",
+        "Flags division by zero when stock_total is 0",
+        "Verdict is Blocked / not ready",
+        "No project files modified",
+        "Report written in Thai"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "component-hooks-bugs",
+      "prompt": "รีวิว src/__review_fixtures__/DealBanner.tsx ให้หน่อย พร้อม commit หรือยัง",
+      "expected_output": "Lint gate shows rules-of-hooks, jsx-key, img alt/no-img-element, unused var; manual: lowercase component name, hook inside condition, setInterval without cleanup, <a> instead of next/link, $ price formatting, negative countdown. Verdict Blocked. No edits.",
+      "files": [],
+      "assertions": [
+        "Ran ESLint on the target file",
+        "Ran tsc --noEmit type check",
+        "Flags lowercase component name deal_banner (should be PascalCase)",
+        "Flags useEffect called inside a condition",
+        "Flags setInterval without cleanup in useEffect",
+        "Flags missing key prop in deals.map",
+        "Flags <img> missing alt / should use next/image",
+        "Flags <a href> should be next/link",
+        "Verdict is Blocked / not ready to commit",
+        "No project files modified",
+        "Report written in Thai"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "no-scope-no-git",
+      "prompt": "ช่วย code review โค้ดที่ผมเพิ่งแก้ให้หน่อย",
+      "expected_output": "Detects no git repo and no path given; asks user which files/folders to review instead of reviewing the whole project. No edits.",
+      "files": [],
+      "assertions": [
+        "Checked whether the project is a git repo",
+        "Asks the user which files or folders to review",
+        "Does not run a whole-project review with findings",
+        "No project files modified",
+        "Report written in Thai"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "clean-badge",
+      "prompt": "ตรวจ src/components/Badge.tsx ให้หน่อยว่ามีปัญหาอะไรไหม",
+      "expected_output": "Lint gate clean; honest report with few/no findings, no invented bugs; verdict Ready or Needs changes with justified items. No edits.",
+      "files": [],
+      "assertions": [
+        "Ran ESLint on the target file",
+        "Ran tsc --noEmit type check",
+        "Reports lint gate as clean / passing",
+        "Does not report any Critical-level bug",
+        "Verdict is Ready or Needs changes (not Blocked)",
+        "No project files modified",
+        "Report written in Thai"
+      ]
+    }
+  ]
+}

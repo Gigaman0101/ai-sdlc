@@ -1,0 +1,35 @@
+{
+  "expectations": [
+    {
+      "text": "Checked whether the project is a git repo",
+      "passed": true,
+      "evidence": "`git status` exit 128"
+    },
+    {
+      "text": "Asks the user which files or folders to review",
+      "passed": false,
+      "evidence": "Guessed scope from file mtimes and reviewed first; question only appended at the end"
+    },
+    {
+      "text": "Does not run a whole-project review with findings",
+      "passed": false,
+      "evidence": "Reviewed 5 guessed files incl. app/search/page.tsx and package.json with many findings"
+    },
+    {
+      "text": "No project files modified",
+      "passed": true,
+      "evidence": "pre/post checksum identical"
+    },
+    {
+      "text": "Report written in Thai",
+      "passed": true,
+      "evidence": "Report in Thai"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 2,
+    "total": 5,
+    "pass_rate": 0.6
+  }
+}
