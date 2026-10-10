@@ -176,7 +176,7 @@ function SearchContent() {
               </svg>
             </div>
             <div className="logo-text">
-              <span className="logo-title">Farmart</span>
+              <span className="logo-title">Farmart 55555</span>
               <span className="logo-subtitle">GROCERY</span>
             </div>
           </Link>
