@@ -3,8 +3,9 @@ import path from 'path';
 import fs from 'fs';
 import { seedDatabase } from './seed';
 
-// Ensure data folder exists
-const dbDir = path.join(process.cwd(), 'data');
+// Ensure data folder exists. Vercel's filesystem is read-only except /tmp,
+// so the DB lives there (re-seeded on each cold start).
+const dbDir = process.env.VERCEL ? '/tmp' : path.join(process.cwd(), 'data');
 if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
 }
