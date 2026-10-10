@@ -59,6 +59,33 @@
   3. `DATABASE.md` (ER diagram, data dictionary, DDL)
   4. `mermaid.html` (Interactive ERD)
 
+## การ Deploy ขึ้น Vercel (Deployment)
+
+- Deploy ได้ 2 วิธี:
+  - **CLI**: รัน `npx vercel login` แล้วรัน `npx vercel` เพื่อ deploy แบบ preview จากนั้นรัน `npx vercel --prod` เพื่อขึ้น production
+  - **GitHub**: Import repo `Gigaman0101/ai-sdlc` ที่ vercel.com/new แล้ว Vercel จะ deploy ให้ทุกครั้งที่ push
+- ไม่ต้องตั้ง env var และ `.vercel/` อยู่ใน `.gitignore` แล้ว
+- Filesystem บน Vercel เขียนได้เฉพาะ `/tmp` ดังนั้น `getDb()` ใน `src/lib/db.ts` จะใช้ `/tmp/farmart.db` เมื่อมี `process.env.VERCEL` และใช้ `data/farmart.db` เมื่อรันในเครื่อง
+- บน Vercel DB จะถูก seed ใหม่ทุก cold start ใช้ได้เพราะทุก API route อ่านอย่างเดียว ถ้าเพิ่ม route ที่เขียนข้อมูล ต้องย้ายไปใช้ DB ภายนอก (เช่น Turso, Neon, Vercel Postgres)
+- `better-sqlite3` เป็น native module ต้องคง `serverExternalPackages: ["better-sqlite3"]` ไว้ใน `next.config.ts`
+
+## Skill ภาพรวมโปรเจกต์ (Project Overview Skill)
+
+- แผนที่โปรเจกต์ (pages, API routes, components, data layer, คำสั่ง, deployment และ changelog) อยู่ใน skill `project-overview` ที่ `.claude/skills/project-overview/SKILL.md` — อ่านก่อนเริ่มแก้โค้ดในส่วนที่ไม่คุ้นเคย
+- บรรทัด `<!-- last-synced-commit: <sha> -->` ด้านบนไฟล์บอกว่า skill อัปเดตถึง commit ไหนแล้ว
+- **การ sync skill กับ git** (ทำเองหรือตั้งเป็น loop): ทำตามขั้นตอนใน section "Keeping this skill current" ท้ายไฟล์
+  1. Diff จาก `last-synced-commit` ถึง `HEAD`
+  2. ข้ามการเปลี่ยนแปลงที่แตะแค่ tests, `graphify-out/`, `coverage/`, reports, `.claude/skills/*-workspace/` หรือ SKILL.md เอง
+  3. แก้เฉพาะ section ที่ได้รับผลกระทบ และเพิ่ม 1 บรรทัดใน changelog ต่อ commit
+  4. เลื่อน `last-synced-commit` ไปที่ `HEAD`
+  5. ถ้าไม่มีอะไรเปลี่ยน ไม่ต้องแก้ไฟล์
+- ตั้ง loop ใน session ได้ด้วย `/loop 5m Sync .claude/skills/project-overview/SKILL.md with git ...` ซึ่ง loop จะหายเมื่อปิด session
+- ถ้าต้องการ sync บน cloud ให้ใช้ `/schedule` ข้อจำกัดคือ:
+  - รันถี่สุดได้ทุก 1 ชั่วโมง
+  - ต้องเชื่อม GitHub กับบัญชี Claude ก่อน
+  - skill ต้องอยู่บน `main` แล้ว
+  - routine ควรเปิด PR จาก branch `claude/skill-sync` ไม่ push เข้า `main` ตรง ๆ
+
 ## การตรวจสอบ Lint (Linting)
 
 - **ทุกครั้งที่แก้ไขโค้ด** (`.ts`, `.tsx`, `.js`, `.mjs`) ต้องรัน `npm run lint` เสมอหลังแก้ไขเสร็จ และก่อนแจ้งว่างานเสร็จ
