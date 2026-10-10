@@ -5,7 +5,7 @@ description: Living map of the Farmart (ai-sdlc-course) Next.js 16 storefront â€
 
 # Farmart project overview
 
-<!-- last-synced-commit: db82bd2e23762ce25076a3d9f098e2b98c47b23e -->
+<!-- last-synced-commit: 0db0772ac85831be589bec7e870229758078542d -->
 <!-- last-synced-at: 2026-10-10 -->
 
 Farmart is a grocery storefront demo built for the AI-SDLC course.
@@ -109,6 +109,8 @@ Import from `@/components` (barrel `index.ts`).
 
 Newest first. One line per commit that changes source structure or behaviour.
 
+- `0db0772` chore: `/search` header logo text changed to "Farmart 55555"
+- `5bf1ef8` docs: add `project-overview` skill
 - `db82bd2` fix: `getDb()` uses `/tmp` on Vercel (read-only filesystem)
 - `2542914` chore: remove code-review eval logs
 - `2223697` chore: initial commit of Farmart storefront
